@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+  <name>Crypt_XXTEA</name>
+  <channel>pear.php.net</channel>
+  <summary>An implementation of XXTEA encryption algorithm.</summary>
+  <description>
+  XXTEA is a secure and fast encryption algorithm. It's suitable for web development.
+  This package allows you to encrypt or decrypt a string using the algorithm.
+  </description>
+  <lead>
+    <name>Wudi Liu</name>
+    <user>wudicgi</user>
+    <email>wudicgi@yahoo.de</email>
+    <active>yes</active>
+  </lead>
+  <date>2006-10-02</date>
+  <version>
+    <release>0.8.0</release>
+    <api>0.8.0</api>
+  </version>
+  <stability>
+    <release>beta</release>
+    <api>beta</api>
+  </stability>
+  <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL License</license>
+  <notes>
+  Initial release.
+  </notes>
+  <contents>
+    <dir name="/">
+      <dir name="Crypt">
+        <file name="XXTEA.php" role="php">
+          <tasks:replace from="@package_version@" to="version" type="package-info"/>
+        </file>
+      </dir>
+      <dir name="tests">
+        <file name="decrypt.phpt" role="test" />
+        <file name="encrypt.phpt" role="test" />
+        <file name="long2str.phpt" role="test" />
+        <file name="setkey.phpt" role="test" />
+        <file name="str2long.phpt" role="test" />
+      </dir>
+    </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>4.2.0</min>
+      </php>
+      <pearinstaller>
+        <min>1.4.0b1</min>
+      </pearinstaller>
+    </required>
+  </dependencies>
+  <phprelease />
+  <changelog>
+    <release>
+      <version>
+        <release>0.8.0</release>
+        <api>0.8.0</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2006-10-02</date>
+      <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL License</license>
+      <notes>
+      Initial release.
+      </notes>
+    </release>
+  </changelog>
+</package>
