@@ -4,8 +4,8 @@
 /**
  * PHP implementation of XXTEA encryption algorithm.
  *
- * XXTEA is a secure and fast encryption algorithm. It's suitable for
- * web development.
+ * XXTEA is a secure and fast encryption algorithm, suitable for web
+ * development.
  *
  * PHP versions 4 and 5
  *
@@ -26,14 +26,17 @@
  *
  * @category   Encryption
  * @package    Crypt_XXTEA
+ * @author     Wudi Liu <wudicgi@gmail.com>
  * @author     Ma Bingyao <andot@ujn.edu.cn>
- * @author     Wudi Liu <wudicgi@yahoo.de>
- * @copyright  2005-2006 Coolcode.CN
+ * @copyright  2005-2008 Coolcode.CN
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
  * @version    CVS: $Id$
  * @link       http://pear.php.net/package/Crypt_XXTEA
  */
 
+/**
+ * Needed for error handling
+ */
 require_once 'PEAR.php';
 
 // {{{ constants
@@ -47,9 +50,9 @@ define('CRYPT_XXTEA_DELTA', 0x9E3779B9);
  *
  * @category   Encryption
  * @package    Crypt_XXTEA
+ * @author     Wudi Liu <wudicgi@gmail.com>
  * @author     Ma Bingyao <andot@ujn.edu.cn>
- * @author     Wudi Liu <wudicgi@yahoo.de>
- * @copyright  2005-2006 Coolcode.CN
+ * @copyright  2005-2008 Coolcode.CN
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
  * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Crypt_XXTEA
@@ -73,21 +76,24 @@ class Crypt_XXTEA {
     /**
      * Sets the secret key
      *
-     * The key must be non-empty, and less than or equal to 16 characters
+     * The key must be non-empty, and not more than 16 characters or 4 long values
      *
      * @access public
      *
-     * @param string $key  the secret key
+     * @param mixed $key  the secret key (string or long array)
      *
      * @return bool  true on success, PEAR_Error on failure
      */
     function setKey($key) {
-        if (!is_string($key)) {
-            return PEAR::raiseError('The secret key must be a string.');
+        if (is_string($key)) {
+            $k = $this->_str2long($key, false);
+        } elseif (is_array($key)) {
+            $k = $key;
+        } else {
+            return PEAR::raiseError('The secret key must be a string or long array.');
         }
-        $k = $this->_str2long($key, false);
         if (count($k) > 4) {
-            return PEAR::raiseError('The secret key cannot be more than 16 characters.');
+            return PEAR::raiseError('The secret key cannot be more than 16 characters or 4 long values.');
         } elseif (count($k) == 0) {
             return PEAR::raiseError('The secret key cannot be empty.');
         } elseif (count($k) < 4) {
@@ -106,23 +112,99 @@ class Crypt_XXTEA {
     /**
      * Encrypts a plain text
      *
+     * As the XXTEA encryption algorithm is designed for encrypting and decrypting
+     * the long array type of data, there is not a standard that defines the method
+     * of converting between string and long array. So this package provides the
+     * ability to encrypt and decrypt the long array type of data to satisfy the
+     * requirement for working with other implementations. And at the same time,
+     * for convenience, it also provides the ability to process the string type of
+     * data, which uses its own method to convert between string and long array.
+     *
      * @access public
      *
-     * @param string $str  the plain text
+     * @param mixed $plaintext  the plain text (string or long array)
      *
-     * @return string  the cipher text on success, PEAR_Error on failure
+     * @return mixed  the cipher text which is the same type as the parameter
+     *                $plaintext on success, PEAR_Error on failure
      */
-    function encrypt($str) {
-        if (!is_string($str)) {
-            return PEAR::raiseError('The plain text must be a string.');
-        }
+    function encrypt($plaintext) {
         if ($this->_key == null) {
             return PEAR::raiseError('Secret key is undefined.');
         }
+        if (is_string($plaintext)) {
+            return $this->_encryptString($plaintext);
+        } elseif (is_array($plaintext)) {
+            return $this->_encryptArray($plaintext);
+        } else {
+            return PEAR::raiseError('The plain text must be a string or long array.');
+        }
+    }
+
+    // }}}
+
+    // {{{ decrypt()
+
+    /**
+     * Decrypts a cipher text
+     *
+     * @access public
+     *
+     * @param mixed $chipertext  the cipher text (string or long array)
+     *
+     * @return mixed  the plain text which is the same type as the parameter
+     *                $chipertext on success, PEAR_Error on failure
+     */
+    function decrypt($chipertext) {
+        if ($this->_key == null) {
+            return PEAR::raiseError('Secret key is undefined.');
+        }
+        if (is_string($chipertext)) {
+            return $this->_decryptString($chipertext);
+        } elseif (is_array($chipertext)) {
+            return $this->_decryptArray($chipertext);
+        } else {
+            return PEAR::raiseError('The chiper text must be a string or long array.');
+        }
+    }
+
+    // }}}
+
+    // {{{ _encryptString()
+
+    /**
+     * Encrypts a string
+     *
+     * @access private
+     *
+     * @param string $str  the string to encrypt
+     *
+     * @return string  the string type of the cipher text on success,
+     *                 PEAR_Error on failure
+     */
+    function _encryptString($str) {
         if ($str == '') {
             return '';
         }
         $v = $this->_str2long($str, true);
+        $v = $this->_encryptArray($v);
+        return $this->_long2str($v, false);
+    }
+
+    // }}}
+
+    // {{{ _encryptArray()
+
+    /**
+     * Encrypts a long array
+     *
+     * @access private
+     *
+     * @param array $v  the long array to encrypt
+     *
+     * @return array  the array type of the cipher text on success,
+     *                PEAR_Error on failure
+     */
+    function _encryptArray($v) {
         $n = count($v) - 1;
         $z = $v[$n];
         $y = $v[0];
@@ -140,33 +222,45 @@ class Crypt_XXTEA {
             $mx = $this->_int32((($z >> 5 & 0x07FFFFFF) ^ $y << 2) + (($y >> 3 & 0x1FFFFFFF) ^ $z << 4)) ^ $this->_int32(($sum ^ $y) + ($this->_key[$p & 3 ^ $e] ^ $z));
             $z = $v[$n] = $this->_int32($v[$n] + $mx);
         }
-        return $this->_long2str($v, false);
+        return $v;
     }
 
-    // }}}
-
-    // {{{ decrypt()
+    // {{{ _decryptString()
 
     /**
-     * Decrypts a cipher text
+     * Decrypts a string
      *
-     * @access public
+     * @access private
      *
-     * @param string $str  the cipher text
+     * @param string $str  the string to decrypt
      *
-     * @return string  the plain text on success, PEAR_Error on failure
+     * @return string  the string type of the plain text on success,
+     *                 PEAR_Error on failure
      */
-    function decrypt($str) {
-        if (!is_string($str)) {
-            return PEAR::raiseError('The cipher text must be a string.');
-        }
-        if ($this->_key == null) {
-            return PEAR::raiseError('Secret key is undefined.');
-        }
+    function _decryptString($str) {
         if ($str == '') {
             return '';
         }
         $v = $this->_str2long($str, false);
+        $v = $this->_decryptArray($v);
+        return $this->_long2str($v, true);
+    }
+
+    // }}}
+
+    // {{{ _encryptArray()
+
+    /**
+     * Decrypts a long array
+     *
+     * @access private
+     *
+     * @param array $v  the long array to decrypt
+     *
+     * @return array  the array type of the plain text on success,
+     *                PEAR_Error on failure
+     */
+    function _decryptArray($v) {
         $n = count($v) - 1;
         $z = $v[$n];
         $y = $v[0];
@@ -184,7 +278,7 @@ class Crypt_XXTEA {
             $y = $v[0] = $this->_int32($v[0] - $mx);
             $sum = $this->_int32($sum - CRYPT_XXTEA_DELTA);
         }
-        return $this->_long2str($v, true);
+        return $v;
     }
 
     // }}}
@@ -205,11 +299,11 @@ class Crypt_XXTEA {
     function _long2str($v, $w) {
         $len = count($v);
         $s = '';
-        for ($i=0; $i<$len; $i++) {
+        for ($i = 0; $i < $len; $i++) {
             $s .= pack('V', $v[$i]);
         }
         if ($w) {
-            return substr($s, 0, $v[$len-1]);
+            return substr($s, 0, $v[$len - 1]);
         } else {
             return $s;
         }

@@ -4,19 +4,18 @@
   <channel>pear.php.net</channel>
   <summary>An implementation of XXTEA encryption algorithm.</summary>
   <description>
-  XXTEA is a secure and fast encryption algorithm. It's suitable for web development.
-  This package allows you to encrypt or decrypt a string using the algorithm.
+  This package allows you to encrypt or decrypt a string or long array by the XXTEA encryption algorithm, which is secure, fast and suitable for web development.
   </description>
   <lead>
     <name>Wudi Liu</name>
     <user>wudicgi</user>
-    <email>wudicgi@yahoo.de</email>
+    <email>wudicgi@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2006-10-02</date>
+  <date>2008-03-02</date>
   <version>
-    <release>0.8.0</release>
-    <api>0.8.0</api>
+    <release>0.8.1</release>
+    <api>0.8.1</api>
   </version>
   <stability>
     <release>beta</release>
@@ -24,7 +23,7 @@
   </stability>
   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL License</license>
   <notes>
-  Initial release.
+  Provided the ability to encrypt and decrypt the long array type of data directly.
   </notes>
   <contents>
     <dir name="/">
@@ -56,6 +55,21 @@
   <changelog>
     <release>
       <version>
+        <release>0.8.1</release>
+        <api>0.8.1</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2008-03-02</date>
+      <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL License</license>
+      <notes>
+      Provided the ability to encrypt and decrypt the long array type of data directly.
+      </notes>
+    </release>
+    <release>
+      <version>
         <release>0.8.0</release>
         <api>0.8.0</api>
       </version>
@@ -66,8 +80,8 @@
       <date>2006-10-02</date>
       <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL License</license>
       <notes>
-      Initial release.
-      </notes>
+	  Initial release.
+	  </notes>
     </release>
   </changelog>
 </package>
