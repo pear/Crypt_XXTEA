@@ -31,7 +31,7 @@ foreach ($keys as $key) {
 
 ?>
 --EXPECT--
-The secret key must be a string or long array.
+The secret key must be a string or long integer array.
 The secret key cannot be empty.
 The secret key cannot be empty.
 The secret key cannot be more than 16 characters or 4 long values.

@@ -61,7 +61,7 @@ class Crypt_XXTEA {
     // {{{ properties
 
     /**
-     * The long array of secret key
+     * The long integer array of secret key
      *
      * @access private
      *
@@ -80,7 +80,7 @@ class Crypt_XXTEA {
      *
      * @access public
      *
-     * @param mixed $key  the secret key (string or long array)
+     * @param mixed $key  the secret key (string or long integer array)
      *
      * @return bool  true on success, PEAR_Error on failure
      */
@@ -90,7 +90,7 @@ class Crypt_XXTEA {
         } elseif (is_array($key)) {
             $k = $key;
         } else {
-            return PEAR::raiseError('The secret key must be a string or long array.');
+            return PEAR::raiseError('The secret key must be a string or long integer array.');
         }
         if (count($k) > 4) {
             return PEAR::raiseError('The secret key cannot be more than 16 characters or 4 long values.');
@@ -113,19 +113,20 @@ class Crypt_XXTEA {
      * Encrypts a plain text
      *
      * As the XXTEA encryption algorithm is designed for encrypting and decrypting
-     * the long array type of data, there is not a standard that defines the method
-     * of converting between string and long array. So this package provides the
-     * ability to encrypt and decrypt the long array type of data to satisfy the
-     * requirement for working with other implementations. And at the same time,
-     * for convenience, it also provides the ability to process the string type of
-     * data, which uses its own method to convert between string and long array.
+     * the long integer array type of data, there is not a standard that defines
+     * how to convert between long integer array and text or binary data for it.
+     * So this package provides the ability to encrypt and decrypt the long integer
+     * arrays directly to satisfy the requirement for working with other
+     * implementations. And at the same time, for convenience, it also provides
+     * the ability to process strings, which uses its own method to group the text
+     * into array.
      *
      * @access public
      *
-     * @param mixed $plaintext  the plain text (string or long array)
+     * @param mixed $plaintext  the plain text (string or long integer array)
      *
-     * @return mixed  the cipher text which is the same type as the parameter
-     *                $plaintext on success, PEAR_Error on failure
+     * @return mixed  the cipher text as the same type as the parameter $plaintext
+     *                on success, PEAR_Error on failure
      */
     function encrypt($plaintext) {
         if ($this->_key == null) {
@@ -136,7 +137,7 @@ class Crypt_XXTEA {
         } elseif (is_array($plaintext)) {
             return $this->_encryptArray($plaintext);
         } else {
-            return PEAR::raiseError('The plain text must be a string or long array.');
+            return PEAR::raiseError('The plain text must be a string or long integer array.');
         }
     }
 
@@ -149,10 +150,10 @@ class Crypt_XXTEA {
      *
      * @access public
      *
-     * @param mixed $chipertext  the cipher text (string or long array)
+     * @param mixed $chipertext  the cipher text (string or long integer array)
      *
-     * @return mixed  the plain text which is the same type as the parameter
-     *                $chipertext on success, PEAR_Error on failure
+     * @return mixed  the plain text as the same type as the parameter $chipertext
+     *                on success, PEAR_Error on failure
      */
     function decrypt($chipertext) {
         if ($this->_key == null) {
@@ -163,7 +164,7 @@ class Crypt_XXTEA {
         } elseif (is_array($chipertext)) {
             return $this->_decryptArray($chipertext);
         } else {
-            return PEAR::raiseError('The chiper text must be a string or long array.');
+            return PEAR::raiseError('The chiper text must be a string or long integer array.');
         }
     }
 
@@ -195,11 +196,11 @@ class Crypt_XXTEA {
     // {{{ _encryptArray()
 
     /**
-     * Encrypts a long array
+     * Encrypts a long integer array
      *
      * @access private
      *
-     * @param array $v  the long array to encrypt
+     * @param array $v  the long integer array to encrypt
      *
      * @return array  the array type of the cipher text on success,
      *                PEAR_Error on failure
@@ -224,6 +225,8 @@ class Crypt_XXTEA {
         }
         return $v;
     }
+
+    // }}}
 
     // {{{ _decryptString()
 
@@ -251,11 +254,11 @@ class Crypt_XXTEA {
     // {{{ _encryptArray()
 
     /**
-     * Decrypts a long array
+     * Decrypts a long integer array
      *
      * @access private
      *
-     * @param array $v  the long array to decrypt
+     * @param array $v  the long integer array to decrypt
      *
      * @return array  the array type of the plain text on success,
      *                PEAR_Error on failure
@@ -286,12 +289,12 @@ class Crypt_XXTEA {
     // {{{ _long2str()
 
     /**
-     * Converts long array to string
+     * Converts long integer array to string
      *
      * @access private
      *
-     * @param array $v  the long array
-     * @param bool  $w  whether the long array contains the length of
+     * @param array $v  the long integer array
+     * @param bool  $w  whether the given array contains the length of
      *                  original plain text
      *
      * @return string  the string
@@ -314,14 +317,14 @@ class Crypt_XXTEA {
     // {{{ _str2long()
 
     /**
-     * Converts string to long array
+     * Converts string to long integer array
      *
      * @access private
      *
      * @param string $s  the string
-     * @param bool   $w  whether to append the length of string
+     * @param bool   $w  whether to append the length of string to array
      *
-     * @return string  the long array
+     * @return string  the long integer array
      */
     function _str2long($s, $w) {
         $v = array_values(unpack('V*', $s.str_repeat("\0", (4-strlen($s)%4)&3)));
@@ -336,7 +339,10 @@ class Crypt_XXTEA {
     // {{{ _int32()
 
     /**
-     * Fixes overflow problem
+     * Corrects long integer value
+     *
+     * Because a number beyond the bounds of the integer type will be automatically
+     * interpreted as a float, the simulation of integer overflow is needed.
      *
      * @access private
      *

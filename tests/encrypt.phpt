@@ -14,7 +14,7 @@ $tuples_string = array(
     array("\xb2\x93\x13\xe5\x96", 'PEAR is a framework and distribution system for reusable PHP components'),
 );
 
-// key-plaintext tuples for long array encryptiont test
+// key-plaintext tuples for long integer array encryptiont test
 $tuples_array = array(
     array(array(0, 0, 0, 0), array(0, 0)),
     array(array(0), array(0, 0, 0, 0, 0)),
@@ -98,7 +98,7 @@ function long2hex($arr) {
 ?>
 --EXPECT--
 Secret key is undefined.
-The plain text must be a string or long array.
+The plain text must be a string or long integer array.
 UsFmrB/Q8zLl+5TIYicLk+mMgrj41jRB
 0ec5tIhpKCIiwdN05MynE+qbtjtD45pEUsaVGaKkHKlD2AewGrjAryZOjQIYLY20HZTbq6Y/YcCcNoAJ
 iRj+IHHKrz5yXL6w7PnvflYzHoDItfi7Eg8+dyaL79vPbCUyRw2eVCKnU7LO2zbxYzj1T+o2kTA+MMhX85ktjddmC6FuVafophvx4Qxc9LU=

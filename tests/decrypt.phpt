@@ -14,7 +14,7 @@ $tuples_string = array(
     array("\xb2\x93\x13\xe5\x96", 'bmeLisYRXKwB6xSK1v10c/QUYJh/iAtEX9q/qX74k8A3l/jVd++Gb41N327ARdZVrUxOG24Rw46WeS8LcEpML585kbOglxY6SbmUaw=='),
 );
 
-// key-plaintext tuples for long array encryptiont test
+// key-plaintext tuples for long integer array encryptiont test
 $tuples_array = array(
     array(array(0, 0, 0, 0), array(87491755, 1465748608)),
     array(array(0), array(-1698224617, 1492735309, 566640726, 178473705, 1574735419)),
@@ -98,7 +98,7 @@ function long2hex($arr) {
 ?>
 --EXPECT--
 Secret key is undefined.
-The chiper text must be a string or long array.
+The chiper text must be a string or long integer array.
 [encryption test]
 PHP is a widely-used general-purpose scripting language
 It is especially suited for Web development and can be embedded into HTML
