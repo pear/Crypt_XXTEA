@@ -331,6 +331,10 @@ class Crypt_XXTEA {
         if ($w) {
             $v[] = strlen($s);
         }
+        if (PHP_INT_SIZE > 4) {
+            // non 32-bit (eg. 64-bit) environment, corrects the integer values
+            $v = array_map(array($this, '_int32'), $v);
+        }
         return $v;
     }
 
